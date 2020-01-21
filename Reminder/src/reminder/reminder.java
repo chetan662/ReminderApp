@@ -1,4 +1,4 @@
-package login;
+package reminder;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 
-public class Login extends Application {
+public class reminder extends Application {
     public int counter = 0;
     public void start(Stage primaryStage) {
         
@@ -61,14 +61,7 @@ public class Login extends Application {
                 reminders.setText(text);
                 long millis = System.currentTimeMillis();
                 
-                clock.setText(String.format("%02d:%02d:%02d", (int) (millis/(1000*60*60)) % 24 - 5, (int) (millis/(1000*60)) % 60, (int) (millis/1000) % 60));
-//                clock.setText( + ":" +  + ":" +);
-//                System.out.println(String.format("%d hour, %d min, %d sec", 
-//                    TimeUnit.MILLISECONDS.toHours(millis),
-//                    TimeUnit.MILLISECONDS.toMinutes(millis),
-//                    TimeUnit.MILLISECONDS.toSeconds(millis) - 
-//                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-//                ));
+                clock.setText(String.format("%02d:%02d:%02d", (int) (millis/(1000*60*60)) % 24 + 7, (int) (millis/(1000*60)) % 60, (int) (millis/1000) % 60));
             }
         };
         timer.schedule(repet, 1000, 1000);
@@ -94,7 +87,6 @@ public class Login extends Application {
                 
                 counter++;
             }
-//            reminders.setText(remindersArr + "\n" + reminderIn.getText() + " at " + hour.getText() + ":" + minute.getText());
             primaryStage.setScene(scene);
             primaryStage.show();
             

@@ -8,11 +8,11 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Reminder.jar" size="9986" download="eager" />
+    <jar href="Reminder.jar" size="10019" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Reminder" >
     <param name="requiredFXVersion" value="8.0+"/>
   </applet-desc>
-  <jfx:javafx-desc  width="800" height="600" main-class="login.Login"  name="Reminder" />
+  <jfx:javafx-desc  width="800" height="600" main-class="reminder.reminder"  name="Reminder" />
   <update check="always"/>
 </jnlp>
