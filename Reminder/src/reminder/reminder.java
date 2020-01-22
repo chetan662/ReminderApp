@@ -3,7 +3,6 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,11 +14,11 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-
 public class reminder extends Application {
-    public int counter = 0;
+    public boolean disabled = false;
     public void start(Stage primaryStage) {
         ArrayList<String> remindersArr = new ArrayList<>();
         ArrayList<Integer> hoursArr = new ArrayList<>();
@@ -32,7 +31,7 @@ public class reminder extends Application {
         grid.setHgap(5);
         grid.setVgap(5);
         Button addButton = new Button("+");
-        Button confirmButton = new Button("OK");
+        Button disableButton = new Button("Do not disturb");
         TextField reminderIn = new TextField("reminder");
         Label errors = new Label("");
         TextField hour = new TextField();
@@ -40,43 +39,53 @@ public class reminder extends Application {
         Text reminders = new Text("");
         Text colon = new Text(":");
         Text clock = new Text("");
+        Text alert = new Text("");
+        alert.setStyle("-fx-font: 32 arial;");
         reminderIn.setPrefWidth(400);
         hour.setPrefWidth(40);
         minute.setPrefWidth(40);
         grid.add(clock, 0, 0);
+        grid.add(disableButton, 4, 0);
         grid.add(errors, 0, 2);
         grid.add(reminderIn, 0, 1);
         grid.add(hour, 1, 1);
         grid.add(colon, 2, 1);
         grid.add(minute, 3, 1);
         grid.add(addButton, 4, 1);
-        grid.add(reminders, 0, 3);
+        grid.add(reminders, 0, 4);
+        grid.add(alert, 0, 3);
         Timer timer = new Timer();
         TimerTask repet = new TimerTask() {
-            
             public void run() {
                 String text = "";
                 long x = System.currentTimeMillis();
-                for (int i = 0; i < counter; i++) {
+                for (int i = 0; i < remindersArr.size(); i++) {
                     if (remindersArr.size() > 0) {
                         text = String.format("%s%s at %02d:%02d%n", text, remindersArr.get(i), hoursArr.get(i), minutesArr.get(i));
-                        if ((int) (x/(1000*60*60)) % 24 + 7 == hoursArr.get(i) && (int) (x/(1000*60)) % 60 == minutesArr.get(i)) {
-                            String musicFile = "sound.mp3";
-                            Media sound = new Media(new File(musicFile).toURI().toString());
-                            MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                            mediaPlayer.play();
+                        if ((int) (x/(1000*60*60)) % 24 + 19 == hoursArr.get(i) && (int) (x/(1000*60)) % 60 == minutesArr.get(i)) {
+                            if (!disabled) {
+                                String musicFile = "sound.mp3";
+                                Media sound = new Media(new File(musicFile).toURI().toString());
+                                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                                mediaPlayer.play();
+                                try {
+                                    alert.setText(remindersArr.get(i));
+                                    TimeUnit.SECONDS.sleep(5);
+                                    alert.setText("");
+                                }
+                                catch (Exception e) {
+                                    System.out.println(e);
+                                }
+                            }
                             remindersArr.remove(i);
                             hoursArr.remove(i);
                             minutesArr.remove(i);
-                            System.out.println("REMINDER");
-                        }
-                        else {
-                            text = "";
                         }
                     }
                 }
                 reminders.setText(text);
-                clock.setText(String.format("%02d:%02d:%02d", (int) (x/(1000*60*60)) % 24 + 7, (int) (x/(1000*60)) % 60, (int) (x/1000) % 60));
+                text = "";
+                clock.setText(String.format("%02d:%02d:%02d", (int) (x/(1000*60*60)) % 24 + 19, (int) (x/(1000*60)) % 60, (int) (x/1000) % 60));
             }
         };
         timer.schedule(repet, 1000, 1000);
@@ -97,10 +106,12 @@ public class reminder extends Application {
                 hoursArr.add(Integer.parseInt(hour.getText()));
                 minutesArr.add(Integer.parseInt(minute.getText()));
                 errors.setText("");
-                counter++;
             }
             primaryStage.setScene(scene);
             primaryStage.show();
+        });
+        disableButton.setOnAction((ActionEvent event) -> {
+            disabled = !disabled;
         });
     }
     public static void main(String[] args) {
